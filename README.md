@@ -15,36 +15,36 @@ LPVOID HookMethod(
 ```
 
 ### Parameters
-_lpVirtualTable_ [in]
-    A pointer to the base address of the virtual table. The Virtual Table is the first addressed region of the class,
-    therefore it also refers to object base address.
+#### _lpVirtualTable_ [in]
+A pointer to the base address of the virtual table. The Virtual Table is the first addressed region of the class,
+therefore it also refers to object base address.
 
-_pHookMethod_ [in]
-    A pointer to the function that should be called in place of the original virtual method.
-    Some constraints are applied here.
+#### _pHookMethod_ [in]
+A pointer to the function that should be called in place of the original virtual method.
+Some constraints are applied here.
 
-    _**x64**_
-    In case of 64 bit, the replacing function must take the object pointer as first argument.
-    This is required by the virtual table as it needs to know which implementation of the method is being called.
+_**x64**_
+In case of 64 bit, the replacing function must take the object pointer as first argument.
+This is required by the virtual table as it needs to know which implementation of the method is being called.
 
-    _**x32**_
-    Here it is optional wether or not to take the object pointer as a parameter.
-    This happens because in x32 the methods use the [`__thiscall`](https://msdn.microsoft.com/pt-br/library/ek8tkfbw.aspx) convention,
-    which keeps the object pointer in ECX register, and the parameters are kept in stack like in `__stdcall` convention, or `__cdecl` in case of `vararg`.
+_**x32**_
+Here it is optional wether or not to take the object pointer as a parameter.
+This happens because in x32 the methods use the [`__thiscall`](https://msdn.microsoft.com/pt-br/library/ek8tkfbw.aspx) convention,
+which keeps the object pointer in ECX register, and the parameters are kept in stack like in `__stdcall` convention, or `__cdecl` in case of `vararg`.
 
-    Therefore, if the object pointer is not required, `__stdcall` should fit.
-    In case you want the object pointer, you can't declare a function that is not a class member method with `__thiscall`.
-    A way to override this is using [`__fastcall`](https://msdn.microsoft.com/pt-br/library/6xa169sk.aspx) convention,
-    Which takes the first and second arguments from ECX and EDX registers respectively, the remaining arguments are passed
-    normally from stack. Simply define the second argument as a DWORD and ignore it.
+Therefore, if the object pointer is not required, `__stdcall` should fit.
+In case you want the object pointer, you can't declare a function that is not a class member method with `__thiscall`.
+A way to override this is using [`__fastcall`](https://msdn.microsoft.com/pt-br/library/6xa169sk.aspx) convention,
+Which takes the first and second arguments from ECX and EDX registers respectively, the remaining arguments are passed
+normally from stack. Simply define the second argument as a DWORD and ignore it.
 
-_dwOffset_ [in, opt]
-    The position of the desired method in virtual table. It's not an indexer,
-    so the value must be the precise memory offset from the virtual table base to the method.
-    
-    _i.e._
-    If you want the third method inside a x64 virtual table, `dwOffset` must be set to `0x10`,
-    whereas the second one would be `0x08` and the first one `0x00` or `NULL`.
+#### _dwOffset_ [in, opt]
+The position of the desired method in virtual table. It's not an indexer,
+so the value must be the precise memory offset from the virtual table base to the method.
+
+_i.e._
+If you want the third method inside a x64 virtual table, `dwOffset` must be set to `0x10`,
+whereas the second one would be `0x08` and the first one `0x00` or `NULL`.
 
 ### Return value
 The return value is a pointer to the original method.
@@ -57,7 +57,6 @@ given that the return pointer requires it as an argument.
 
 ## Examples
 ### x64
-Basic usage:
 ```c++
 class Sum
 {
@@ -160,4 +159,4 @@ Press any key to continue. . .
 ```
 
 ## Credits
-@Thordin for his vtable-hook class, Geecko for D3D example, gfreivasc (scim4niac).
+Thordin for his vtable-hook class, MarkHC for explanation on call conventions, Geecko for D3D example, gfreivasc (scim4niac).
